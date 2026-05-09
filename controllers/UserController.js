@@ -19,7 +19,11 @@ class UserController {
             //impede o comportamento padrão do navegador de atualizar a página
             event.preventDefault();
 
-            let values = this.getValues();
+            let btn = this.formEl.querySelector("[type=submit]"); //procura pelo botão de submit
+
+            btn.disabled = true; //
+            
+                        let values = this.getValues();
 
             this.getPhoto().then(
                 (content) => {
@@ -27,6 +31,10 @@ class UserController {
                     
                     // Ele pega esse usuário extraído e manda para a função que vai desenhá-lo na tela.
                     this.addLine(values);
+
+                    this.formEl.reset(); // reseta o formulário após o envio
+
+                    btn.disabled = false;
 
                 },
                 (e) => {
