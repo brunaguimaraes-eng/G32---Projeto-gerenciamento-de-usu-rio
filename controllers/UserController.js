@@ -37,7 +37,7 @@ class UserController {
                     Swal.fire({
                         title: "Sucesso",
                         text: "Usuário cadastrado com sucesso!",
-                        icon:"sucess",
+                        icon:"success",
                         confirmButtonText:"Ok",
                         timer: 5000 //fecha sozinha depois de 5 segundos
                     })
@@ -104,6 +104,7 @@ class UserController {
                 
                 console.warn(`Campo ${field.name} deletou o required, parou no JS`); //caso o usuário delete o required no f12
             }
+           
         //checa qual opção do gender está marcada e só guarda a info que está marcada
         if(field.name == "gender"){
 
@@ -124,6 +125,8 @@ class UserController {
         }
 
         });
+
+        if (!isValid) return false; //garante que depois do meu loop, o usuário nao seja criado com um campo vazio.
 
         return new User(
             user.name, 
@@ -149,7 +152,7 @@ class UserController {
             <td>${dataUser.name}</td>
             <td>${dataUser.email}</td>
             <td>${(dataUser.admin) ? 'Sim' : 'Não'}</td>
-            <td>${dataUser.birth}</td>
+            <td>${dataUser.register}</td>
             <td>
                 <button type="button" class="btn btn-primary btn-xs btn-flat">Editar</button>
                 <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
