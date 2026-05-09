@@ -20,10 +20,11 @@ class UserController {
             event.preventDefault();
 
             let btn = this.formEl.querySelector("[type=submit]"); //procura pelo botão de submit
+            let values = this.getValues();
+           
+            if (!values) return false;
 
-            btn.disabled = true; //
-            
-                        let values = this.getValues();
+            btn.disabled = true;           
 
             this.getPhoto().then(
                 (content) => {
@@ -83,9 +84,17 @@ class UserController {
     getValues(){
         
         let user = {};
+        let isValid = true; //variável para valdar se o forms está ok
 
         [...this.formEl.elements].forEach(function (field, index){
 
+            //SE o campo atual estiver na minha lista de obrigatórios E ele estiver vazio, ENTÃO marque o formulário como inválido
+            if(['name', 'email', 'password', 'birth', 'country'].indexOf(field.name) > -1 && !field.value){
+
+                isValid = false;
+                
+                console.warn(`Campo ${field.name} deletou o required, parou no JS`); //caso o usuário delete o required no f12
+            }
         //checa qual opção do gender está marcada e só guarda a info que está marcada
         if(field.name == "gender"){
 
