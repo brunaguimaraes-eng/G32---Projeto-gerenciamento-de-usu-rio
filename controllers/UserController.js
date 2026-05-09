@@ -33,6 +33,15 @@ class UserController {
                     // Ele pega esse usuário extraído e manda para a função que vai desenhá-lo na tela.
                     this.addLine(values);
 
+                    //pop-up de sucesso
+                    Swal.fire({
+                        title: "Sucesso",
+                        text: "Usuário cadastrado com sucesso!",
+                        icon:"sucess",
+                        confirmButtonText:"Ok",
+                        timer: 5000 //fecha sozinha depois de 5 segundos
+                    })
+
                     this.formEl.reset(); // reseta o formulário após o envio
 
                     btn.disabled = false;
