@@ -20,11 +20,11 @@ class UserController {
             event.preventDefault();
 
             let btn = this.formEl.querySelector("[type=submit]"); //procura pelo botão de submit
-            let values = this.getValues();
-           
-            if (!values) return false;
 
-            btn.disabled = true;           
+            let values = this.getValues(); //chama o método getValues que percorre os campos           
+            if (!values) return false; //se algum campo estiver vazio o código para aqui
+
+            btn.disabled = true; //assim que o código passa pela validação, desabilita o botão de enviar.          
 
             this.getPhoto().then(
                 (content) => {
@@ -48,7 +48,14 @@ class UserController {
 
                 },
                 (e) => {
-                    console.error(e);
+                    Swal.fire({
+                        title: "Erro!",
+                        text: e,
+                        icon: "error",
+                        confirmButtonText: "Ok!"
+                    });
+
+                    btn.disabled = false; //reativa o botão para o usuário tentar novamente.
                 }
             );         
             
@@ -67,6 +74,18 @@ class UserController {
             let elements = [...this.formEl.elements].filter(item => item.name === 'photo');       
 
             let file = elements[0].files[0]; //pega o primeiro arquivo nesse input
+
+            //validação se a foto enviada é realmente um arquivo de imagem.
+            if (file) {
+
+                if (file.type.split('/')[0] !== 'image'){
+                    reject("Formato de imagem incompatível. Por favor, envie um arquivo de imagem.");
+                    return; 
+
+                }
+
+            }
+
 
             fileReader.onload = () => {
 
