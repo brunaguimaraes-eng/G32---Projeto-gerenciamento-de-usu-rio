@@ -149,6 +149,8 @@ class UserController {
 
         let tr = document.createElement('tr');
 
+        tr.dataset.user = JSON.stringify(dataUser);
+
         /*Ele injeta uma nova linha de tabela (<tr>) usando Template Literals (as crases `). Os ${dataUser.name}, ${dataUser.email}, etc., 
         são substituídos pelos valores reais do usuário, criando a interface na tela.*/              
         tr.innerHTML = `            
@@ -164,6 +166,28 @@ class UserController {
            
         `;
         this.tableEl.appendChild(tr);
+
+        this.updateCount();
+    }
+
+    updateCount(){
+
+        let numberUsers = 0;
+        let numberAdmin = 0;
+
+        [...this.tableEl.children].forEach(tr => {
+
+            let user = JSON.parse(tr.dataset.user);
+
+            numberUsers++;
+
+            if(user._admin)numberAdmin++;           
+        })
+
+        document.querySelector("#number-users").innerHTML = numberUsers;
+        document.querySelector("#number-users-admin").innerHTML = numberAdmin;
+
+
     }
 
 }
