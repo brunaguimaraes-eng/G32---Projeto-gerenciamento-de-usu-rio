@@ -41,7 +41,7 @@ class UserController {
                 (content) => {
                     values.photo = content;
                     
-                    // Ele pega esse usuário extraído e manda para a função que vai desenhá-lo na tela.
+                    //pela o objeto values que agora está com nome, email e senha e insere uma nova linha na tabela.Usuário vê o que digitou
                     this.addLine(values);
 
                     //pop-up de sucesso
@@ -131,9 +131,7 @@ class UserController {
             if(['name', 'email', 'password'].indexOf(field.name) > -1 && !field.value){
 
                 field.parentElement.classList.add('has-error');
-                isValid = false;
-
-                
+                isValid = false;                
             }
            
             //checa qual opção do gender está marcada e só guarda a info que está marcada
@@ -197,14 +195,27 @@ class UserController {
 
         tr.querySelector(".btn-edit").addEventListener("click", e => {
 
-            console.log(JSON.parse(tr.dataset.user));
+            let json = JSON.parse(tr.dataset.user);
+            let form = document.querySelector("#form-user-update")
 
-            this.showPanelUpdate();
-            
+            for (let name in json){
+
+                let field = form.querySelector("[name=" + name.replace("_", "") + "]")
+
+                
+
+                if (field){
+
+                    if (field.type == 'file') continue;
+                    
+                    field.value = json[name];
+                }
+
+            }
+
+            this.showPanelUpdate();         
 
         });
-
-
 
         this.tableEl.appendChild(tr);
 
