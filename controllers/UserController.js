@@ -45,34 +45,33 @@ class UserController {
                     if (!values._photo){
                         result._photo = userOld._photo;
                     } else {
-                        result.photo = content
+                        result._photo = content
                     }
-                })
-            )
+
+                    tr.dataset.user = JSON.stringify(result);
+
+                tr.innerHTML = `            
+                    <td><img src="${result._photo}" alt="User Image" class="img-circle img-sm"></td>
+                        <td>${result._name}</td>
+                        <td>${result._email}</td>
+                        <td>${(result._admin) ? 'Sim' : 'Não'}</td>
+                        <td>${Utils.dateFormat(result._register)}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
+                        <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
+                    </td>           
+                `;
+
+                this.addEventsTr(tr);
+                this.updateCount();
+                btn.disabled = false;
+                this.showPanelCreate();
+
+            }))
+        })        
+        
             
-            tr.dataset.user = JSON.stringify(result);
-
-            tr.innerHTML = `            
-            <td><img src="${result._photo}" alt="User Image" class="img-circle img-sm"></td>
-            <td>${result._name}</td>
-            <td>${result._email}</td>
-            <td>${(result._admin) ? 'Sim' : 'Não'}</td>
-            <td>${Utils.dateFormat(result._register)}</td>
-            <td>
-                <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
-                <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
-            </td>           
-        `;
-
-        this.addEventsTr(tr);
-
-        this.updateCount();
-
-        btn.disabled = false;
-        this.showPanelCreate();
-
-        });
-
+            
     }
 
     //Ele adiciona um ouvinte de eventos no formulário. Quando o usuário clica no botão de "Salvar/Enviar", este evento é disparado.
@@ -242,7 +241,7 @@ class UserController {
             <td>${Utils.dateFormat(dataUser.register)}</td>
             <td>
                 <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
-                <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
+                <button type="button" class="btn btn-danger btn-delete btn-xs btn-flat">Excluir</button>
             </td>           
         `;
 
@@ -254,6 +253,20 @@ class UserController {
     }
 
     addEventsTr(tr){
+
+        tr.querySelector(".btn-delete").addEventListener("click", e => {
+
+            if(confirm("Deseja deletar?")){
+
+                tr.remove();
+
+                this.updateCount();
+            }
+
+
+        })
+
+
 
         tr.querySelector(".btn-edit").addEventListener("click", e => {
 
