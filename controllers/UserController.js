@@ -193,22 +193,39 @@ class UserController {
             </td>           
         `;
 
-        tr.querySelector(".btn-edit").addEventListener("click", e => {
+                tr.querySelector(".btn-edit").addEventListener("click", e => {
 
-            let json = JSON.parse(tr.dataset.user);
-            let form = document.querySelector("#form-user-update")
-
+            let json = JSON.parse(tr.dataset.user); //transforma o texto em um objeto, ex:{"nome":"João"}" vira o objeto json.nome
+            let form = document.querySelector("#form-user-update")//abre o formulário.
+            
+            //percorre as propriedades do json, se tiver nome, email e gender, ele roda 3x.
             for (let name in json){
 
-                let field = form.querySelector("[name=" + name.replace("_", "") + "]")
-
-                
+                //procura no form onde o atributo name seja igual o json ex: _name remove o _ e procura por name.
+                let field = form.querySelector("[name=" + name.replace("_", "") + "]")            
 
                 if (field){
 
-                    if (field.type == 'file') continue;
+                    switch(field.type){
+                        case 'file': 
+                        continue;
+                        break;
+
+                        case 'radio':
+                            field = form.querySelector("[name=" + name.replace("_", "") + "][value=" + json[name] + "]")
+                            field.checked = true;
+                        break;
+
+                        case 'checkbox':
+                            field.checked = json[name];
+                        break;
+
+                        default:
+                            field.value = json[name];
+
+                    }
                     
-                    field.value = json[name];
+                    
                 }
 
             }
