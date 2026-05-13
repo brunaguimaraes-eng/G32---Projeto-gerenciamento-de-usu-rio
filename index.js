@@ -2,7 +2,7 @@
 do seu HTML como parâmetros. Depois, ele chama o método onSubmit(), que basicamente diz: 
 "Controlador, fique de plantão esperando alguém enviar esse formulário".*/
 
-let userController = new UserController("form-user-create","table-users");
+let userController = new UserController("form-user-create", "form-user-update", "table-users");
 
 
 
