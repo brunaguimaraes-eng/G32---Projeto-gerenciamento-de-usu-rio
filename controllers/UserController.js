@@ -34,15 +34,30 @@ class UserController {
             let index = this.formUpdateEl.dataset.trIndex;
 
             let tr = this.tableEl.rows[index];
+
+            let userOld = JSON.parse(tr.dataset.user);
+
+            let result = Object.assign({}, userOld, values);
+
+            this.getPhoto().then(
+                (content => {
+
+                    if (!values._photo){
+                        result._photo = userOld._photo;
+                    } else {
+                        result.photo = content
+                    }
+                })
+            )
             
-            tr.dataset.user = JSON.stringify(values);
+            tr.dataset.user = JSON.stringify(result);
 
             tr.innerHTML = `            
-            <td><img src="${values.photo}" alt="User Image" class="img-circle img-sm"></td>
-            <td>${values.name}</td>
-            <td>${values.email}</td>
-            <td>${(values.admin) ? 'Sim' : 'Não'}</td>
-            <td>${values.register}</td>
+            <td><img src="${result._photo}" alt="User Image" class="img-circle img-sm"></td>
+            <td>${result._name}</td>
+            <td>${result._email}</td>
+            <td>${(result._admin) ? 'Sim' : 'Não'}</td>
+            <td>${Utils.dateFormat(result._register)}</td>
             <td>
                 <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
                 <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
@@ -52,6 +67,9 @@ class UserController {
         this.addEventsTr(tr);
 
         this.updateCount();
+
+        btn.disabled = false;
+        this.showPanelCreate();
 
         });
 
@@ -221,7 +239,7 @@ class UserController {
             <td>${dataUser.name}</td>
             <td>${dataUser.email}</td>
             <td>${(dataUser.admin) ? 'Sim' : 'Não'}</td>
-            <td>${dataUser.register}</td>
+            <td>${Utils.dateFormat(dataUser.register)}</td>
             <td>
                 <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
                 <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
@@ -237,18 +255,17 @@ class UserController {
 
     addEventsTr(tr){
 
-                tr.querySelector(".btn-edit").addEventListener("click", e => {
+        tr.querySelector(".btn-edit").addEventListener("click", e => {
 
             let json = JSON.parse(tr.dataset.user); //transforma o texto em um objeto, ex:{"nome":"João"}" vira o objeto json.nome
-            let form = document.querySelector("#form-user-update")//abre o formulário.
-
-            form.dataset.trIndex = tr.sectionRowIndex;
+            
+            this.formUpdateEl.dataset.trIndex = tr.sectionRowIndex;
             
             //percorre as propriedades do json, se tiver nome, email e gender, ele roda 3x.
             for (let name in json){
 
                 //procura no form onde o atributo name seja igual o json ex: _name remove o _ e procura por name.
-                let field = form.querySelector("[name=" + name.replace("_", "") + "]")            
+                let field = this.formUpdateEl.querySelector("[name=" + name.replace("_", "") + "]")            
 
                 if (field){
 
@@ -258,7 +275,7 @@ class UserController {
                         break;
 
                         case 'radio':
-                            field = form.querySelector("[name=" + name.replace("_", "") + "][value=" + json[name] + "]")
+                            field = this.formUpdateEl.querySelector("[name=" + name.replace("_", "") + "][value=" + json[name] + "]")
                             field.checked = true;
                         break;
 
@@ -275,6 +292,8 @@ class UserController {
                 }
 
             }
+
+            this.formUpdateEl.querySelector(".photo").src = json._photo;
 
             this.showPanelUpdate();         
 

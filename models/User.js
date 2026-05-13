@@ -14,11 +14,7 @@ class User {
     }
 
     get register(){
-        return this._register.toLocaleDateString('pt-br') + ' ' +
-            this._register.toLocaleTimeString('pt-br', {
-                hour: '2-digit',
-                minute: '2-digit'
-            })
+        return this._register;
     }
 
     get name(){
