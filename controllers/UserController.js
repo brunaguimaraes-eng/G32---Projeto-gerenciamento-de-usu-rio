@@ -53,6 +53,8 @@ class UserController {
 
                     user.loadFromJSON(result);
 
+                    user.save();
+
                     this.getTr(user, tr);                
                     this.updateCount();
                     this.formUpdateEl.reset();
@@ -84,9 +86,9 @@ class UserController {
             this.getPhoto().then(
                 (content) => {
                     values.photo = content;
-                    
-                    this.insert(values);
 
+                    values.save();
+                    
                     //pega o objeto values que agora está com nome, email e senha e insere uma nova linha na tabela.Usuário vê o que digitou
                     this.addLine(values);
 
@@ -247,17 +249,6 @@ class UserController {
 
     }
 
-    insert(data){
-
-        let users = this.getUsersStorage();
-        
-        users.push(data);
-
-        //sessionStorage.setItem("users", JSON.stringify(users));
-        localStorage.setItem("users", JSON.stringify(users));
-
-    }
-
     //Adiciona uma nova linha tr na tabela
     addLine(dataUser){
 
@@ -298,6 +289,12 @@ class UserController {
         tr.querySelector(".btn-delete").addEventListener("click", e => {
 
             if(confirm("Deseja deletar?")){
+
+                let user = new User();
+
+                user.loadFromJSON(JSON.parse(tr.dataset.user));
+
+                user.remove();
 
                 tr.remove();
 
