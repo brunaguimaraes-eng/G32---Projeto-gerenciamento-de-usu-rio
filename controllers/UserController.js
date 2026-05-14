@@ -10,6 +10,7 @@ class UserController {
 
        this.onSubmit();
        this.onEdit();
+       this.selectAll();
         
     }
 
@@ -50,6 +51,11 @@ class UserController {
 
                     tr.dataset.user = JSON.stringify(result);
 
+                    let users = this.getUsersStorage();
+
+                    users[index] = result;
+                    sessionStorage.setItem("users", JSON.stringify(users));
+
                 tr.innerHTML = `            
                     <td><img src="${result._photo}" alt="User Image" class="img-circle img-sm"></td>
                         <td>${result._name}</td>
@@ -74,7 +80,7 @@ class UserController {
             
     }
 
-    //Ele adiciona um ouvinte de eventos no formulário. Quando o usuário clica no botão de "Salvar/Enviar", este evento é disparado.
+    //Ele adiciona um ouvinte de eventos no formulário. Quando o usuário clica no botão de "Salvar/Enviar", este evento é disparado. BOTÃO DE SALVAR
     onSubmit(){
 
         this.formEl.addEventListener("submit", event => {
@@ -93,7 +99,9 @@ class UserController {
                 (content) => {
                     values.photo = content;
                     
-                    //pela o objeto values que agora está com nome, email e senha e insere uma nova linha na tabela.Usuário vê o que digitou
+                    this.insert(values);
+
+                    //pega o objeto values que agora está com nome, email e senha e insere uma nova linha na tabela.Usuário vê o que digitou
                     this.addLine(values);
 
                     //pop-up de sucesso
@@ -147,8 +155,7 @@ class UserController {
 
                 }
 
-            }
-
+            };
 
             fileReader.onload = () => {
 
@@ -222,6 +229,46 @@ class UserController {
             user.photo, 
             user.admin
         );
+    }
+
+    getUsersStorage(){
+
+        let users = [];
+
+        if(sessionStorage.getItem("users")){
+
+            users = JSON.parse(sessionStorage.getItem("users"))
+
+        }
+
+        return users;
+    }    
+
+
+    selectAll(){
+
+        let users = this.getUsersStorage();
+
+        users.forEach(dataUser => {
+
+            let user = new User();
+
+            user.loadFromJSON(dataUser)
+
+            this.addLine(user);
+        });
+
+
+    }
+
+    insert(data){
+
+        let users = this.getUsersStorage();
+        
+        users.push(data);
+
+        sessionStorage.setItem("users", JSON.stringify(users));
+
     }
 
     //Ele recebe o objeto User que acabou de ser criado e altera o HTML da sua tabela
