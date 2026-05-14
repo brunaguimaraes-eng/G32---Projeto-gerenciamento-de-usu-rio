@@ -91,11 +91,15 @@ class User {
 
     getNewID(){
 
-        if (!window.id) window.id = 0;
+        let usersID = parseInt(localStorage.getItem("usersID"));
 
-        id++;
+        if (!usersID > 0) usersID = 0;
 
-        return id;
+        usersID++;
+
+        localStorage.setItem("usersID", usersID);
+
+        return usersID;
 
     }
 
