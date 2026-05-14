@@ -40,8 +40,8 @@ class UserController {
 
             let result = Object.assign({}, userOld, values);
 
-            this.getPhoto().then(
-                (content => {
+            this.getPhoto(this.formUpdateEl).then(
+                (content) => {
 
                     if (!values._photo){
                         result._photo = userOld._photo;
@@ -49,33 +49,19 @@ class UserController {
                         result._photo = content
                     }
 
-                    tr.dataset.user = JSON.stringify(result);
+                    let user = new User();
 
-                    let users = this.getUsersStorage();
+                    user.loadFromJSON(result);
 
-                    users[index] = result;
-                    sessionStorage.setItem("users", JSON.stringify(users));
+                    this.getTr(user, tr);                
+                    this.updateCount();
+                    this.formUpdateEl.reset();
+                    btn.disabled = false;
+                    this.showPanelCreate();
+                }
 
-                tr.innerHTML = `            
-                    <td><img src="${result._photo}" alt="User Image" class="img-circle img-sm"></td>
-                        <td>${result._name}</td>
-                        <td>${result._email}</td>
-                        <td>${(result._admin) ? 'Sim' : 'Não'}</td>
-                        <td>${Utils.dateFormat(result._register)}</td>
-                    <td>
-                        <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
-                        <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
-                    </td>           
-                `;
-
-                this.addEventsTr(tr);
-                this.updateCount();
-                btn.disabled = false;
-                this.showPanelCreate();
-
-            }))
-        })        
-        
+            )
+        });
             
             
     }
@@ -272,12 +258,21 @@ class UserController {
 
     }
 
-    //Ele recebe o objeto User que acabou de ser criado e altera o HTML da sua tabela
+    //Adiciona uma nova linha tr na tabela
     addLine(dataUser){
 
-        let tr = document.createElement('tr');
+        let tr = this.getTr(dataUser);
 
-        tr.dataset.user = JSON.stringify(dataUser);
+        this.tableEl.appendChild(tr);
+
+        this.updateCount();
+    }
+
+    getTr(dataUser, tr = null){
+
+        if(tr === null) tr = document.createElement('tr');
+
+         tr.dataset.user = JSON.stringify(dataUser);      
 
         /*Ele injeta uma nova linha de tabela (<tr>) usando Template Literals (as crases `). Os ${dataUser.name}, ${dataUser.email}, etc., 
         são substituídos pelos valores reais do usuário, criando a interface na tela.*/              
@@ -295,9 +290,7 @@ class UserController {
 
         this.addEventsTr(tr);
 
-        this.tableEl.appendChild(tr);
-
-        this.updateCount();
+        return tr;
     }
 
     addEventsTr(tr){
