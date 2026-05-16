@@ -116,7 +116,7 @@ class UserController {
 
                     btn.disabled = false; //reativa o botão para o usuário tentar novamente.
                 }
-            );         
+            );       
             
         
         });        
